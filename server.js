@@ -12,9 +12,22 @@ pool.connect((err) => {
   }
 });
 
+const setCorsHeaders = (res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+};
+
 const requestHandler = async (req, res) => {
+  setCorsHeaders(res);
+
   const parsedUrl = url.parse(req.url, true);
   const tableName = parsedUrl.query.table;
+
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    return res.end();
+  }
 
   if (
     req.method === "POST" &&
